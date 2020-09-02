@@ -14,15 +14,12 @@ describe('DashboardComponent', () => {
   let fixture: ComponentFixture<DashboardComponent>;
   let heroService;
   let getHeroesSpy;
-  let addMessageSpy;
+  
 
   beforeEach(async(() => {
     heroService = jasmine.createSpyObj('HeroService', ['getHeroes']);
     getHeroesSpy = heroService.getHeroes.and.returnValue( of(HEROES) );
 
-    const messageService =  new MessageService();
-    addMessageSpy = spyOn(messageService, 'add');
-   
     TestBed.configureTestingModule({
       declarations: [
         DashboardComponent,
@@ -32,8 +29,7 @@ describe('DashboardComponent', () => {
         RouterTestingModule.withRoutes([])
       ],
       providers: [
-        { provide: HeroService, useValue: heroService },
-        { provide: MessageService, useValue: messageService }
+        { provide: HeroService, useValue: heroService }
       ]
     })
     .compileComponents();
@@ -63,6 +59,11 @@ describe('DashboardComponent', () => {
   }));
 
   it('should add an initialising messages', async () => {
+    const messageService =  TestBed.get(MessageService);
+    const addMessageSpy = spyOn(messageService, 'add');
+   
+    component.ngOnInit();
+
     // Assertion method 1
     expect(addMessageSpy.calls.any()).toBe(true);
     // Assertion method 2
