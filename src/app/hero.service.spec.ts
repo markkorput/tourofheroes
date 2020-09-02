@@ -23,14 +23,14 @@ describe('HeroService', () => {
     it ('should fetch hero details', (done) => {
     
       heroService.getHero(123).subscribe(data => {
-        expect(data).toEqual({id: 123, name: "One-Two-Three"});
+        expect(data).toEqual({id: 125, name: "One-Two-Five"});
         const messages = TestBed.get(MessageService).messages;
         expect(messages[messages.length-1]).toEqual(`HeroService: fetched hero id=123`);
         done();
       });
     
       const req = http.expectOne('api/heroes/123');
-      req.flush({id: 123, name: "One-Two-Three"});
+      req.flush({id: 125, name: "One-Two-Five"});
 
       http.verify();
     });
