@@ -20,8 +20,8 @@ describe('DashboardComponent', () => {
     heroService = jasmine.createSpyObj('HeroService', ['getHeroes']);
     getHeroesSpy = heroService.getHeroes.and.returnValue( of(HEROES) );
 
-    const messageService = jasmine.createSpyObj('MessageService', ['add']);
-    addMessageSpy = messageService.add;
+    const messageService =  new MessageService();
+    addMessageSpy = spyOn(messageService, 'add');
    
     TestBed.configureTestingModule({
       declarations: [

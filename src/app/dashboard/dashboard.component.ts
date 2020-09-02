@@ -16,6 +16,7 @@ export class DashboardComponent implements OnInit {
     private messageService: MessageService) { }
 
   ngOnInit() {
+    this.messageService.clear();
     this.messageService.add('Dashboard initialising...');
     this.getHeroes();
   }
