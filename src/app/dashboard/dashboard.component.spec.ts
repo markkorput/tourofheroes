@@ -7,16 +7,22 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { HEROES } from '../mock-heroes';
 import { HeroService } from '../hero.service';
+import { MessageService } from '../message.service';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
   let heroService;
   let getHeroesSpy;
+  let addMessageSpy;
 
   beforeEach(async(() => {
     heroService = jasmine.createSpyObj('HeroService', ['getHeroes']);
     getHeroesSpy = heroService.getHeroes.and.returnValue( of(HEROES) );
+
+    const messageService = jasmine.createSpyObj('MessageService', ['add']);
+    addMessageSpy = messageService.add;
+   
     TestBed.configureTestingModule({
       declarations: [
         DashboardComponent,
@@ -26,7 +32,8 @@ describe('DashboardComponent', () => {
         RouterTestingModule.withRoutes([])
       ],
       providers: [
-        { provide: HeroService, useValue: heroService }
+        { provide: HeroService, useValue: heroService },
+        { provide: MessageService, useValue: messageService }
       ]
     })
     .compileComponents();
@@ -55,4 +62,13 @@ describe('DashboardComponent', () => {
     expect(fixture.nativeElement.querySelectorAll('a').length).toEqual(4);
   }));
 
+  it('should add an initialising messages', async () => {
+    // Assertion method 1
+    expect(addMessageSpy.calls.any()).toBe(true);
+    // Assertion method 2
+    expect(addMessageSpy.calls.count()).toEqual(1);
+    expect(addMessageSpy.calls.argsFor(0)).toEqual(['Dashboard initialising...']);
+    // Assertion method 3
+    expect(addMessageSpy.calls.allArgs()).toEqual([['Dashboard initialising...']]);
+  });
 });
