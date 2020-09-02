@@ -24,6 +24,8 @@ describe('HeroService', () => {
     
       heroService.getHero(123).subscribe(data => {
         expect(data).toEqual({id: 123, name: "One-Two-Three"});
+        const messages = TestBed.get(MessageService).messages;
+        expect(messages[messages.length-1]).toEqual(`HeroService: fetched hero id=123`);
         done();
       });
     
