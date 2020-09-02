@@ -9,20 +9,23 @@ import { HEROES } from '../mock-heroes';
 import { HeroService } from '../hero.service';
 import { MessageService } from '../message.service';
 
+class MessageServiceMock extends MessageService {
+  public addedMessages: string[] = [];
+  add(message: string) {
+    this.addedMessages.push(message);
+  }
+}
+
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
   let heroService;
   let getHeroesSpy;
-  let addMessageSpy;
 
   beforeEach(async(() => {
     heroService = jasmine.createSpyObj('HeroService', ['getHeroes']);
     getHeroesSpy = heroService.getHeroes.and.returnValue( of(HEROES) );
-
-    const messageService =  new MessageService();
-    addMessageSpy = spyOn(messageService, 'add');
-   
+ 
     TestBed.configureTestingModule({
       declarations: [
         DashboardComponent,
@@ -33,7 +36,7 @@ describe('DashboardComponent', () => {
       ],
       providers: [
         { provide: HeroService, useValue: heroService },
-        { provide: MessageService, useValue: messageService }
+        { provide: MessageService, useValue: new MessageServiceMock() }
       ]
     })
     .compileComponents();
@@ -63,12 +66,8 @@ describe('DashboardComponent', () => {
   }));
 
   it('should add an initialising messages', async () => {
-    // Assertion method 1
-    expect(addMessageSpy.calls.any()).toBe(true);
-    // Assertion method 2
-    expect(addMessageSpy.calls.count()).toEqual(1);
-    expect(addMessageSpy.calls.argsFor(0)).toEqual(['Dashboard initialising...']);
-    // Assertion method 3
-    expect(addMessageSpy.calls.allArgs()).toEqual([['Dashboard initialising...']]);
+    const messageService = TestBed.get(MessageService) as MessageServiceMock
+   
+    expect(messageService.addedMessages).toEqual(['Dashboard initialising...']);
   });
 });
